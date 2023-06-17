@@ -3,9 +3,8 @@ from launch_ros.actions import Node
 from ament_index_python import get_package_share_directory
 import os
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, FindExecutable
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, LogInfo, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.event_handlers import OnProcessStart
 
 def generate_launch_description():
 
@@ -77,7 +76,6 @@ def generate_launch_description():
         map_file_args,
         map_server_node,
         amcl_node,
-        rviz2_node,
         lifecycle_manager_localization,
         call_global_localization
         
