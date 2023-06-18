@@ -60,6 +60,38 @@ def generate_launch_description():
         
     )
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Rviz 2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    rviz2_node = Node(
+    
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', PathJoinSubstitution([get_package_share_directory('path_planner_server'), 'config', 'pathplanning.rviz'])]
+    
+    )
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Filter~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    filters_yaml = PathJoinSubstitution([nav2_config_dir,'filters.yaml'])
+
+    filter_mask = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='filter_mask_server',
+        output='screen',
+        emulate_tty=True,
+        parameters=[filters_yaml]
+    
+    )
+
+    cost_map_filter = Node(
+        package='nav2_map_server',
+        executable='costmap_filter_info_server',
+        name='costmap_filter_info_server',
+        output='screen',
+        emulate_tty=True,
+        parameters=[filters_yaml]
+    )
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Lifecycle manager~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     nav2_lifecycle_manager = Node(
@@ -73,18 +105,10 @@ def generate_launch_description():
                     {'node_names': ['controller_server',
                                     'planner_server',
                                     'recoveries_server',
-                                    'bt_navigator']}
+                                    'bt_navigator',
+                                    'filter_mask_server',
+                                    'costmap_filter_info_server']}
                     ],
-    )
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Rviz 2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    rviz2_node = Node(
-    
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', PathJoinSubstitution([get_package_share_directory('path_planner_server'), 'config', 'pathplanning.rviz'])]
-    
     )
     
     return LaunchDescription([
@@ -94,6 +118,8 @@ def generate_launch_description():
         planner,
         manager_recovery_behaviors,
         behavior_tree_navigator,
+        filter_mask,
+        cost_map_filter,
         nav2_lifecycle_manager,
         
     ])

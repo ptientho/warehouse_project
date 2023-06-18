@@ -1,0 +1,30 @@
+<!-- launch file with arguments-->
+<!-- obstacle: distance in front of the robot-->
+<!-- degree: number of degree rotation-->
+
+<launch>
+    <arg name="obstacles" default="0.0"/>
+    <arg name="degrees" default="0"/>
+    <arg name="final_approach" default="false"/>
+    <!--let name="rviz_config" value="/home/user/ros2_ws/src/checkpoint5/attach_shelf/rviz"/-->
+    <!--include launch gazebo-->
+    <!--include launch ros bridge-->
+    <!-- launch node-->
+    <!--node pkg="attach_shelf" exec="pre_approach_v2_node" name="pre_approach_v2_node">
+        <param name="obstacles" value="$(var obstacles)" />
+        <param name="degrees" value="$(var degrees)" />
+    </node-->
+
+    <node pkg="attach_shelf" exec="pre_approach_v2_node" name="pre_approach_v2_node">
+        <param name="obstacles" value="$(var obstacles)" />
+        <param name="degrees" value="$(var degrees)" />
+        <param name="final_approach" value="$(var final_approach)" />
+    </node>
+
+    <!--node pkg="rviz" exec="rviz" name="rviz_1685569644957552462" output="screen" args="-d $(var rviz_config)"/-->
+    
+
+
+
+
+</launch>
