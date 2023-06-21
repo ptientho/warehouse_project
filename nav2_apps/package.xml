@@ -9,6 +9,9 @@
 
  <depend>rclpy</depend>
   <depend>geometry_msgs</depend>
+  <depend>attach_shelf_msg</depend>
+  <depend>attach_shelf</depend>
+
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>

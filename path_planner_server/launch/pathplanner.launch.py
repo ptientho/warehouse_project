@@ -110,6 +110,18 @@ def generate_launch_description():
                                     'costmap_filter_info_server']}
                     ],
     )
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Attach Shelf Server~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    attach_shelf_server_node = Node(
+    
+        package='attach_shelf',
+        executable='attach_shelf_node',
+        output='screen',
+        name='attach_shelf_server',
+        parameters=[{'use_sim_time': True}]
+  
+    )
     
     return LaunchDescription([
         
@@ -121,5 +133,5 @@ def generate_launch_description():
         filter_mask,
         cost_map_filter,
         nav2_lifecycle_manager,
-        
+        attach_shelf_server_node
     ])

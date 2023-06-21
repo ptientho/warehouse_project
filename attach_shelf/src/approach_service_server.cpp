@@ -79,7 +79,6 @@ class AttachShelfServer : public rclcpp::Node
         
         srv_ = this->create_service<go2loading>("/approach_shelf", std::bind(&AttachShelfServer::service_callback, this, _1, _2), rmw_qos_profile_services_default, srv_group_);        
         vel_pub_ = this->create_publisher<velocity>("/robot/cmd_vel", 10);
-        lift_pub_ = this->create_publisher<std_msgs::msg::Empty>("elevator_up", 10);
         laser_sub_ = this->create_subscription<laser>("/scan", 1, std::bind(&AttachShelfServer::laser_callback, this, _1), opt);
         odom_sub_ = this->create_subscription<odom>("/odom",10, std::bind(&AttachShelfServer::odom_callback, this, _1), opt);
         found_shelf = false;
@@ -112,9 +111,7 @@ class AttachShelfServer : public rclcpp::Node
                 this->move_to_front_shelf();
                 //move robot underneath the shelf
                 this->move_under_shelf();
-                //lift the shelf
-                auto msg = std_msgs::msg::Empty();
-                lift_pub_->publish(msg);
+                
                 RCLCPP_INFO(this->get_logger(), "FINAL APPROACH ACHIEVED");
                 res->complete = true;
             } else {
@@ -240,7 +237,7 @@ class AttachShelfServer : public rclcpp::Node
     void publish_tf_shelf(){
     
         auto t = geometry_msgs::msg::TransformStamped();
-        t.header.frame_id = "robot_front_laser_base_link";
+        t.header.frame_id = "robot_base_footprint";
         t.child_frame_id = "caster_frame";
 
         t.header.stamp = this->get_clock()->now();
@@ -312,7 +309,7 @@ class AttachShelfServer : public rclcpp::Node
         float orientation_angle = std::atan2(desired_pose.position.y, desired_pose.position.x);
         float error_orientation = abs(orientation_angle - (float)robot_yaw);
         RCLCPP_WARN(this->get_logger(), "ERROR DISTANCE TO FRONT SHELF ==> %f", error_distance);
-        while (error_distance >= 0.1){
+        while (error_distance >= 0.15){
             
             vel_msg.linear.x = 0.2;
             vel_msg.angular.z = 0.0;
@@ -339,7 +336,7 @@ class AttachShelfServer : public rclcpp::Node
         vel_msg.linear.x = 0.2;
         vel_msg.angular.z = 0.0;
         vel_pub_->publish(vel_msg);
-        usleep(5000000);
+        usleep(7000000);
 
         vel_msg.linear.x = 0.0;
         vel_msg.angular.z = 0.0;
@@ -351,7 +348,6 @@ class AttachShelfServer : public rclcpp::Node
 
     rclcpp::Service<go2loading>::SharedPtr srv_;
     rclcpp::Publisher<velocity>::SharedPtr vel_pub_;
-    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr lift_pub_;
     rclcpp::Subscription<laser>::SharedPtr laser_sub_;
     rclcpp::Subscription<odom>::SharedPtr odom_sub_;
     rclcpp::CallbackGroup::SharedPtr sub_group_;
