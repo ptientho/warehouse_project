@@ -21,7 +21,8 @@ from rclpy.duration import Duration
 from geometry_msgs.msg import Polygon, Point32, Twist
 from attach_shelf_msg.srv import GoToLoading
 from std_msgs.msg import Empty
-from rclpy.parameter import Parameter, ParameterType
+from rcl_interfaces.srv import SetParameters
+from rcl_interfaces.msg import Parameter, ParameterValue, SetParametersResult
 import rclpy
 from rclpy.node import Node
 
@@ -72,6 +73,9 @@ def main():
     lift_down_pub = main.create_publisher(Empty,'/elevator_down',10)
     msg = Empty()
     lift_down_pub.publish(msg)
+    #define set_parameter client
+    set_param1_client = main.create_client(SetParameters,'/local_costmap/local_costmap/set_parameters')
+    set_param2_client = main.create_client(SetParameters,'/global_costmap/global_costmap/set_parameters')
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Initial Pose~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     initial_pose = PoseStamped()
@@ -153,7 +157,7 @@ def main():
             vel = Twist()
             vel.linear.x = -0.2
             vel_pub.publish(vel)
-            time.sleep(12.0)
+            time.sleep(10.0)
             vel.linear.x = 0.0
             vel_pub.publish(vel)
             
@@ -202,21 +206,46 @@ def main():
                 time.sleep(5.0)
                 vel.linear.x = 0.0
                 vel_pub.publish(vel)
-
-                #set robot_radius
-                '''
-                parameter1 = Parameter(
-
-                    "local_costmap.local_costmap.robot_radius",Parameter.Type.DOUBLE,
-                    0.25
-                )
-                parameter2 = Parameter(
-                    "global_costmap.global_costmap.robot_radius",Parameter.Type.DOUBLE,
-                    0.25
-                )
+                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                #set robot_radius local_costmap
+                while not set_param1_client.wait_for_service(timeout_sec=1.0):
+                    main.get_logger().info('service not available... waiting')
+                set_param_req = SetParameters.Request()
+ 
+                parameter = Parameter()
+                parameter.name = "robot_radius"
+                parameter.value.double_value = 0.25
+                set_param_req.parameters = [parameter]
                 
-                main.set_parameters([parameter1,parameter2])
-                '''
+                #wait the task to complete and get the result
+                param_future = set_param1_client.call_async(set_param_req)
+                rclpy.spin_until_future_complete(main,param_future)
+                #param_result = param_future.result()
+                
+
+                #if (param_result.results[0][0] == True):
+                #    print("set robot_radius for local_costmap")                
+                
+                #set robot_radius global_costmap
+                while not set_param2_client.wait_for_service(timeout_sec=1.0):
+                    main.get_logger().info('service not available... waiting')
+                set_param_req = SetParameters.Request()
+                
+                parameter = Parameter()
+                parameter.name = "robot_radius"
+                parameter.value.double_value = 0.25
+                set_param_req.parameters = [parameter]
+                
+                #wait the task to complete and get the result
+                param_future = set_param2_client.call_async(set_param_req)
+                rclpy.spin_until_future_complete(main,param_future)
+                #param_result = param_future.result().
+
+                #if (param_result.results[0][0] == True):
+                #    print("set robot_radius for local_costmap")  
+                
+                
+                
                 #navigate to initial pose
                 navigator.goToPose(initial_pose)
 
