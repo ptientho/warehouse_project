@@ -12,4 +12,4 @@ filter_mask_server:
     use_sim_time: true
     frame_id: "map"
     topic_name: "/keepout_filter_mask"
-    yaml_filename: "/home/user/ros2_ws/src/warehouse_project/map_server/config/warehouse_map_keepout_sim.yaml"
+    yaml_filename: "/home/user/ros2_ws/src/warehouse_project/map_server/config/warehouse_map_keepout_real.yaml"

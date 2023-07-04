@@ -22,7 +22,7 @@ from geometry_msgs.msg import Polygon, Point32, Twist
 from attach_shelf_msg.srv import GoToLoading
 from std_msgs.msg import Empty
 from rcl_interfaces.srv import SetParameters
-from rcl_interfaces.msg import Parameter, ParameterValue, SetParametersResult
+from rcl_interfaces.msg import Parameter, ParameterValue, SetParametersResult, ParameterType
 import rclpy
 from rclpy.node import Node
 
@@ -214,17 +214,19 @@ def main():
  
                 parameter = Parameter()
                 parameter.name = "robot_radius"
-                parameter.value.double_value = 0.25
+                parameter.value = ParameterValue(double_value=0.25,type=ParameterType.PARAMETER_DOUBLE)
                 set_param_req.parameters = [parameter]
                 
                 #wait the task to complete and get the result
                 param_future = set_param1_client.call_async(set_param_req)
                 rclpy.spin_until_future_complete(main,param_future)
-                #param_result = param_future.result()
+                param_result = param_future.result()
                 
-
-                #if (param_result.results[0][0] == True):
-                #    print("set robot_radius for local_costmap")                
+                for result in param_result.results:
+                    if result.successful:
+                        print("Parameter set successfully")
+                    else:
+                        print("Failed to set parameter:", result.reason)                
                 
                 #set robot_radius global_costmap
                 while not set_param2_client.wait_for_service(timeout_sec=1.0):
@@ -233,16 +235,19 @@ def main():
                 
                 parameter = Parameter()
                 parameter.name = "robot_radius"
-                parameter.value.double_value = 0.25
+                parameter.value = ParameterValue(double_value=0.25,type=ParameterType.PARAMETER_DOUBLE)
                 set_param_req.parameters = [parameter]
                 
                 #wait the task to complete and get the result
                 param_future = set_param2_client.call_async(set_param_req)
                 rclpy.spin_until_future_complete(main,param_future)
-                #param_result = param_future.result().
-
-                #if (param_result.results[0][0] == True):
-                #    print("set robot_radius for local_costmap")  
+                param_result = param_future.result()
+                
+                for result in param_result.results:
+                    if result.successful:
+                        print("Parameter set successfully")
+                    else:
+                        print("Failed to set parameter:", result.reason)
                 
                 
                 
