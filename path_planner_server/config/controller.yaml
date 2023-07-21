@@ -19,15 +19,15 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1
+      yaw_goal_tolerance: 0.1
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: -0.1
       min_vel_y: 0.0
-      max_vel_x: 0.4
+      max_vel_x: 0.1
       max_vel_y: 0.0
       max_vel_theta: 0.3
       min_speed_xy: 0.0
@@ -46,7 +46,7 @@ controller_server:
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1
       trans_stopped_velocity: 0.15
       short_circuit_trajectory_evaluation: True
       stateful: True
@@ -70,8 +70,8 @@ local_costmap:
     ros__parameters:
       update_frequency: 4.0
       publish_frequency: 2.0
-      global_frame: robot_odom
-      robot_base_frame: robot_base_footprint
+      global_frame: robot_odom #robot_odom
+      robot_base_frame: robot_base_footprint #robot_base_footprint
       use_sim_time: True
       rolling_window: true
       width: 2

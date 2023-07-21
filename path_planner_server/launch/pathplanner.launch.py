@@ -100,7 +100,7 @@ def generate_launch_description():
         executable='lifecycle_manager',
         name='lifecycle_manager_path_planner',
         output='screen',
-        parameters=[{'use_sim_time': True},
+        parameters=[{'use_sim_time': False},
                     {'autostart': True},
                     {'node_names': ['controller_server',
                                     'planner_server',
@@ -119,7 +119,7 @@ def generate_launch_description():
         executable='attach_shelf_node',
         output='screen',
         name='attach_shelf_server',
-        parameters=[{'use_sim_time': True}]
+        parameters=[{'use_sim_time': False}]
   
     )
     

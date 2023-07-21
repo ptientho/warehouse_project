@@ -19,7 +19,7 @@ def generate_launch_description():
         executable='map_server',
         name='map_server',
         output='screen',
-        parameters=[{'use_sim_time': True}, 
+        parameters=[{'use_sim_time': False}, 
                     {'yaml_filename': PathJoinSubstitution([map_file_dir, map_file_f])}
                     ]   
     
@@ -45,7 +45,7 @@ def generate_launch_description():
         executable='lifecycle_manager',
         name='lifecycle_manager_localization',
         output='screen',
-        parameters=[{'use_sim_time': True},
+        parameters=[{'use_sim_time': False},
                     {'autostart': True},
                     {'node_names': ['map_server','amcl']}]
 
@@ -74,6 +74,7 @@ def generate_launch_description():
     return LaunchDescription([
 
         map_file_args,
+        rviz2_node,
         map_server_node,
         amcl_node,
         lifecycle_manager_localization,
